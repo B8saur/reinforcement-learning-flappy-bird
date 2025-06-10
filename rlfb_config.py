@@ -1,0 +1,25 @@
+# screen size
+WIDTH = 800
+HEIGHT = 450
+
+# colors
+BLUE = (78, 192, 202)
+GREEN = (138, 173, 73)
+YELLOW = (249, 241, 42)
+
+# game parameters
+INTRO_DISTANCE = 1.1*HEIGHT
+PIPE_COUNT = 20
+
+# pipe parameters
+PIPE_RADIUS = 0.13*HEIGHT
+PIPE_LOW = 0.3*HEIGHT
+PIPE_HIGH = 0.7*HEIGHT
+PIPE_LENGTH = 0.2*HEIGHT
+
+# pipe positioning
+INTERPIPE_DISTANCE = 0.8*HEIGHT
+INTERPIPE_DEVIATION = 0
+
+# bird stats
+SPEED = 0.007*HEIGHT
