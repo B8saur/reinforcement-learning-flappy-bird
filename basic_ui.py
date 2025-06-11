@@ -3,28 +3,14 @@ from pygame.locals import *
 
 from rlfb_config import *
 import engine as eng
+from drawable import *
 
 
 pygame.init()
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("basic_ui_title")
-position = 0
-
-class Rectangle(pygame.sprite.Sprite):
-    def __init__(self, a, b):
-        super().__init__()
-        
-        self.surf = pygame.Surface((a, b))
-        self.surf.fill(GREEN)
-
-def draw_pipe(pipe):
-    up = Rectangle(pipe.length, pipe.middle - pipe.radius)
-    down = Rectangle(pipe.length, HEIGHT - pipe.middle - pipe.radius)
-
-    screen.blit(up.surf, (pipe.position - position, 0))
-    screen.blit(down.surf, (pipe.position - position, pipe.middle + pipe.radius))
-
+x_position = 0
 
 clock = pygame.time.Clock()
 
@@ -36,21 +22,29 @@ first_pipe = 0
 run = True
 while run:
     clock.tick(60)
-    screen.fill(BLUE)
+
+    jump = False
+    for e in pygame.event.get():
+        if e.type == QUIT or (e.type == KEYDOWN and e.key == K_ESCAPE):
+            run = False
+        elif e.type == KEYDOWN and e.key == K_SPACE:
+            jump = True
+
+    x_position, data, result = engine.update(jump)
     
+
+    screen.fill(BLUE)
+    draw_circle(screen, data[0])
     for i in range(first_pipe, len(pipes)):
-        if(pipes[i].position + pipes[i].length < position):         # already behind
+        if(pipes[i].position + pipes[i].length + LEFT_BUFFER < x_position):         # already behind
             first_pipe += 1
             continue
-        if(pipes[i].position > position + WIDTH):           # too far ahead
+        if(pipes[i].position > x_position + WIDTH):           # too far ahead
             break
-        draw_pipe(pipes[i])
-
-    for e in pygame.event.get():
-        if e.type == QUIT or e.type == KEYDOWN:
-            run = False
-    pygame.display.flip()
-    position += SPEED
+        draw_pipe(screen, x_position, pipes[i])
+    screen.blit(pygame.transform.flip(screen, False, True), (0,0))
+    draw_text(screen, "({:0.3f},{:0.3f},{:0.3f},{:0.3f},{:0.3f})    ({:d},{:d})".
+              format(data[0], data[1], data[2], data[3], data[4], result[0], result[1]))
 
 
-
+    pygame.display.update()
