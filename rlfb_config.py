@@ -34,5 +34,6 @@ MAX_V_SPEED = 0.015
 q_learning_rate = 0.1
 q_discount_factor = 0.9
 q_exploration_rate = 0.995
+q_exploration_rate_min = 0.001
 q_exploration_rate_decay = 0.995
 
