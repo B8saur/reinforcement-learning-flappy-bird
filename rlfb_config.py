@@ -29,3 +29,8 @@ B_RADIUS = 0.05
 SPEED = 0.007
 GRAVITY = 0.0007
 MAX_V_SPEED = 0.015
+
+# Q-learning parameters
+q_learning_rate = 0.5
+q_discount_factor = 0.9
+q_exploration_rate = 0.0
