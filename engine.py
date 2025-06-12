@@ -49,7 +49,7 @@ class Game_engine:
             (self.y_position, self.vertical_speed, \
                 self.pipes[self.current_pipe].middle - self.pipes[self.current_pipe].radius, \
                 self.pipes[self.current_pipe].middle + self.pipes[self.current_pipe].radius, \
-                max(0, self.pipes[self.current_pipe].position - self.x_position - B_RADIUS)), \
+                self.pipes[self.current_pipe].position - self.x_position - B_RADIUS), \
             (self.current_pipe, self.state)
 
         # should return:

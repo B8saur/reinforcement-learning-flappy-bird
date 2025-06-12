@@ -20,6 +20,7 @@ first_pipe = 0
 
 # Game loop
 run = True
+paused = False
 while run:
     clock.tick(60)
 
@@ -29,8 +30,11 @@ while run:
             run = False
         elif e.type == KEYDOWN and e.key == K_SPACE:
             jump = True
+        elif e.type == KEYDOWN:
+            paused = not paused
 
-    x_position, data, result = engine.update(jump)
+    if not paused:
+        x_position, data, result = engine.update(jump)
     
 
     screen.fill(BLUE)
