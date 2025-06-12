@@ -56,6 +56,6 @@ class Game_engine:
         # x_position
         # (bird_height, bird_speed_vertical, next_pipe_low, next_pipe_high, next_pipe_distance)
                 # input for rl algorithm
-                # last one is zero when inside the pipe 
+                # last one is negative when inside the pipe 
         # (current_score (int), status)
                 # status=False means lost, should stop and evaluate the result
