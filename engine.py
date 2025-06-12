@@ -39,11 +39,12 @@ class Game_engine:
                     < self.x_position - B_RADIUS:
                 self.current_pipe += 1
 
-            if(self.current_pipe == len(self.pipes)):
+            if self.current_pipe == len(self.pipes):
                 self.state = False
                 self.current_pipe -= 1
 
-            # TODO: add colision detection
+            if self.detect_collision():
+                self.state = False
 
         return self.x_position, \
             (self.y_position, self.vertical_speed, \
@@ -59,3 +60,28 @@ class Game_engine:
                 # last one is negative when inside the pipe 
         # (current_score (int), status)
                 # status=False means lost, should stop and evaluate the result
+
+    def detect_collision(self):
+        if self.y_position + B_RADIUS > 1:          # top
+            return True
+        if self.y_position - B_RADIUS < 0:          # bottom
+            return True
+
+        # pipe collision detection:
+        if self.x_position + B_RADIUS < self.pipes[self.current_pipe].position:
+            return False            # current pipe is to far away to hit it
+        
+        range = B_RADIUS
+        cur_pipe = self.pipes[self.current_pipe]
+
+        if self.x_position < cur_pipe.position:            # mid before pipe
+            range = np.sqrt(B_RADIUS**2 - (self.x_position - cur_pipe.position)**2)
+        elif self.x_position > cur_pipe.position + cur_pipe.length:
+            range = np.sqrt(B_RADIUS**2 - (self.x_position - cur_pipe.position - cur_pipe.length)**2)
+        
+        if cur_pipe.middle + cur_pipe.radius < self.y_position + range:
+            return True         # upper half of the bird hit the pipe
+        if cur_pipe.middle - cur_pipe.radius > self.y_position - range:
+            return True         # upper half of the bird hit the pipe       
+        return False
+    
