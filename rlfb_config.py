@@ -31,6 +31,8 @@ GRAVITY = 0.0007
 MAX_V_SPEED = 0.015
 
 # Q-learning parameters
-q_learning_rate = 0.5
+q_learning_rate = 0.1
 q_discount_factor = 0.9
-q_exploration_rate = 0.0
+q_exploration_rate = 0.995
+q_exploration_rate_decay = 0.995
+
