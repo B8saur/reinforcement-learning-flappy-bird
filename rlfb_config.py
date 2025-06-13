@@ -15,10 +15,10 @@ INTRO_DISTANCE = 0.6
 PIPE_COUNT = 20
 
 # pipe parameters
-PIPE_RADIUS = 0.15
+PIPE_RADIUS = 0.25
 PIPE_LOW = 0.3
 PIPE_HIGH = 0.7
-PIPE_LENGTH = 0.05
+PIPE_LENGTH = 0.35
 
 # pipe positioning
 INTERPIPE_DISTANCE = 0.9
@@ -37,3 +37,5 @@ q_exploration_rate = 0.995
 q_exploration_rate_min = 0.001
 q_exploration_rate_decay = 0.995
 
+# NN config
+max_grad_norm = 5.0
