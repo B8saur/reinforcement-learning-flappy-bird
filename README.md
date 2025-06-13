@@ -20,5 +20,6 @@ All settings can be changed in config files
 Running "python3 play_q.py" fits the Q-learning model and lets it play for a while.
 
 ===============================================
+
 Enjoy!
 
