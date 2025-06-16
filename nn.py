@@ -1,5 +1,5 @@
 import numpy as np
-from learning_config import *
+from game_config import *
 from engine import *
 import random
 from collections import deque
@@ -36,7 +36,7 @@ class Model_NN:
         self.lr = 0.0001
         self.layer_sizes = [4, 16, 16, 2]
         self.replay = deque(maxlen=50000)
-        self.batch_size = 64
+        self.batch_size = 32
 
         self.weights = []
         self.biases = []
