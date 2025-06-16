@@ -10,7 +10,7 @@ from nn import *
 
 # Train model
 model = Model_NN()
-model.fit(10000)
+model.fit(20000)
 
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -32,7 +32,7 @@ while run:
     while run and not new_game:
         clock.tick(12)
 
-        jump = model.action(game_state)
+        jump = bool(model.action(game_state))
         # print(jump)
 
         for e in pygame.event.get():
