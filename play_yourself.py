@@ -6,7 +6,6 @@ import engine as eng
 from drawable import *
 from evaluate import *
 
-
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("basic_ui_title")
@@ -16,7 +15,7 @@ clock = pygame.time.Clock()
 # Game loop
 run = True
 while run:
-    pipes = eng.get_pipes_list()            # ADD "True" AS AN ARGUMENT HERE
+    pipes = eng.get_pipes_list(HARD)
     engine = eng.Game_engine(pipes)
     first_pipe = 0
     x_position = 0
@@ -39,7 +38,6 @@ while run:
 
         if not paused:
             x_position, data, result = engine.update(jump)
-            print(loss(x_position, data))
 
 
         screen.fill(BLUE)
@@ -52,8 +50,8 @@ while run:
                 break
             draw_pipe(screen, x_position, pipes[i])
         screen.blit(pygame.transform.flip(screen, False, True), (0,0))
-        draw_text(screen, "({:0.3f},{:0.3f},{:0.3f},{:0.3f},{:0.3f})    ({:d},{:d})".
-                format(data[0], data[1], data[2], data[3], data[4], result[0], result[1]))
+        draw_text(screen, "({:0.3f})    ({:0.3f},{:0.3f},{:0.3f},{:0.3f},{:0.3f})    ({:d},{:d})".
+                format(loss(x_position,data), data[0], data[1], data[2], data[3], data[4], result[0], result[1]))
 
 
         pygame.display.update()

@@ -1,3 +1,6 @@
+# difficulty
+HARD = True
+
 # screen size
 WIDTH = 800
 HEIGHT = 450

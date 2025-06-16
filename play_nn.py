@@ -5,6 +5,7 @@ from learning_config import *
 from game_config import *
 import engine as eng
 from drawable import *
+from evaluate import *
 
 from nn import *
 
@@ -23,7 +24,7 @@ clock = pygame.time.Clock()
 # Game loop
 run = True
 while run:
-    pipes = eng.get_pipes_list()
+    pipes = eng.get_pipes_list(HARD)
     engine = eng.Game_engine(pipes)
     game_state = engine.update(False)
     first_pipe = 0
@@ -62,8 +63,8 @@ while run:
                 break
             draw_pipe(screen, x_position, pipes[i])
         screen.blit(pygame.transform.flip(screen, False, True), (0,0))
-        draw_text(screen, "({:0.3f},{:0.3f},{:0.3f},{:0.3f},{:0.3f})    ({:d},{:d})".
-                format(data[0], data[1], data[2], data[3], data[4], result[0], result[1]))
+        draw_text(screen, "({:0.3f})    ({:0.3f},{:0.3f},{:0.3f},{:0.3f},{:0.3f})    ({:d},{:d})".
+                format(loss(x_position,data), data[0], data[1], data[2], data[3], data[4], result[0], result[1]))
 
 
         pygame.display.update()
