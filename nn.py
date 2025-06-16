@@ -41,7 +41,6 @@ class Model_NN:
         self.weights = []
         self.biases = []
 
-        self.target_model = deepcopy(self)
 
         for i in range(len(self.layer_sizes)-1):
             num_in, num_out = self.layer_sizes[i], self.layer_sizes[i+1]
@@ -50,6 +49,8 @@ class Model_NN:
             b = np.zeros((num_out, 1))
             self.weights.append(w)
             self.biases.append(b)
+            
+        self.target_model = deepcopy(self)
 
     def update_target_model(self):
         self.target_model.weights = [w.copy() for w in self.weights]
