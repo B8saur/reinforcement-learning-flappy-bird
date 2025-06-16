@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 
-from rlfb_config import *
+from game_config import *
 import engine as eng
 from drawable import *
 
@@ -15,8 +15,8 @@ clock = pygame.time.Clock()
 # Game loop
 run = True
 while run:
-    engine = eng.Game_engine()
-    pipes = engine.get_init_state()
+    pipes = eng.get_pipes_list()
+    engine = eng.Game_engine(pipes)
     first_pipe = 0
     x_position = 0
 

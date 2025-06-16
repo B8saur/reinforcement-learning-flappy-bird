@@ -1,5 +1,5 @@
 import numpy as np
-from rlfb_config import *
+from learning_config import *
 from engine import *
 import random
 from collections import deque

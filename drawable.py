@@ -1,8 +1,7 @@
 import pygame
 from pygame.locals import *
 
-from rlfb_config import *
-# import engine
+from game_config import *
 
 class Rectangle(pygame.sprite.Sprite):
     def __init__(self, a, b):
