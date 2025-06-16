@@ -1,5 +1,6 @@
 import numpy as np
-from rlfb_config import *
+from game_config import *
+from learning_config import *
 from engine import *
 from collections import defaultdict
 import random
@@ -34,8 +35,8 @@ class Model_Q:
     def fit(self, episodes):
         cur_exploration_rate = q_exploration_rate
         for episode in tqdm(range(episodes), colour='green'):
-            game = Game_engine()
-            game_state = game.get_init_state()
+            pipes = get_pipes_list(True, PIPE_COUNT_LEARN)
+            game = Game_engine(pipes)
             game_state = game.update(0)
             q_state, _ = get_discrete_state(game_state)
             
@@ -83,8 +84,8 @@ class Model_TD:
     def fit(self, episodes):
         cur_exploration_rate = q_exploration_rate
         for episode in tqdm(range(episodes), colour='green'):
-            game = Game_engine()
-            game_state = game.get_init_state()
+            pipes = get_pipes_list(True, PIPE_COUNT_LEARN)
+            game = Game_engine(pipes)
             game_state = game.update(0)
             q_state, _ = get_discrete_state(game_state)
 

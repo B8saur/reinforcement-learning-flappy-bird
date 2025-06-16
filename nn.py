@@ -1,5 +1,5 @@
 import numpy as np
-from rlfb_config import *
+from learning_config import *
 from engine import *
 import random
 from collections import deque
@@ -118,14 +118,14 @@ class Model_NN:
     def action(self, game_state):
         state, alive = get_useful_state(game_state)
         out_val, _, _ = self.forward_pass(state)
-        print(out_val)
+        # print(out_val)
         return int(np.argmax(out_val))
     
     def fit(self, episodes):
         for episode in tqdm(range(episodes), colour='green'):
             epsilon = max(0.001, 1.0 - episode / episodes)
-            game = Game_engine()
-            game_state = game.get_init_state()
+            pipes = get_pipes_list(True, PIPE_COUNT_LEARN)
+            game = Game_engine(pipes)
             game_state = game.update(0)
             state, alive = get_useful_state(game_state)
 

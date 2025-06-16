@@ -1,7 +1,8 @@
 import pygame
 from pygame.locals import *
 
-from rlfb_config import *
+from learning_config import *
+from game_config import *
 import engine as eng
 from drawable import *
 
@@ -20,8 +21,8 @@ clock = pygame.time.Clock()
 # Game loop
 run = True
 while run:
-    engine = eng.Game_engine()
-    pipes = engine.get_init_state()
+    pipes = eng.get_pipes_list()
+    engine = eng.Game_engine(pipes)
     game_state = engine.update(False)
     first_pipe = 0
     x_position = 0
@@ -32,7 +33,7 @@ while run:
         clock.tick(12)
 
         jump = model.action(game_state)
-        print(jump)
+        # print(jump)
 
         for e in pygame.event.get():
             if e.type == QUIT or (e.type == KEYDOWN and e.key == K_ESCAPE):         # exit

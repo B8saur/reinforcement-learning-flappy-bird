@@ -1,30 +1,38 @@
 import numpy as np
-from rlfb_config import *
+from game_config import *
 
 class Pipe:
-    def __init__(self, prev_pos):
+    def __init__(self, prev_pos, radius = PIPE_RADIUS, length = PIPE_LENGTH):
         self.middle = np.random.uniform(PIPE_LOW, PIPE_HIGH)
-        self.length = PIPE_LENGTH
-        self.radius = PIPE_RADIUS
+        self.length = length
+        self.radius = np.random.normal(radius, PIPE_RADIUS_DEVIATION)
 
         self.position = prev_pos + np.random.normal(INTERPIPE_DISTANCE, INTERPIPE_DEVIATION)
 
+def get_pipes_list(learn = False, pipe_count = PIPE_COUNT):
+    result = [None] * pipe_count
+    result[0] = Pipe(INTRO_DISTANCE)
+
+    radius = PIPE_RADIUS
+    decrease = PIPE_RADIUS_DECREASE
+    if learn:
+        decrease = PIPE_RADIUS_DECREASE_LEARN
+    
+    for i in range(1, pipe_count):
+        radius -= decrease
+        result[i] = Pipe(result[i-1].position, radius)
+    
+    return result
 
 class Game_engine:
-    def __init__(self, pipe_count = PIPE_COUNT):
+    def __init__(self, pipes):
         self.x_position = 0
         self.y_position = INTRO_X_POS
         self.vertical_speed = 0
         self.current_pipe = 0
         self.state = True
 
-        self.pipes = [None] * pipe_count
-        self.pipes[0] = Pipe(INTRO_DISTANCE)
-        for i in range(1, pipe_count):
-            self.pipes[i] = Pipe(self.pipes[i-1].position)
-
-    def get_init_state(self):
-        return self.pipes
+        self.pipes = pipes
     
     def update(self, jump = False):
         if self.state:            # game still going

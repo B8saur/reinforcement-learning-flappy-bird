@@ -12,13 +12,19 @@ YELLOW = (249, 241, 42)
 LEFT_BUFFER = 0.2
 INTRO_X_POS = 0.5
 INTRO_DISTANCE = 0.6
-PIPE_COUNT = 20
+PIPE_COUNT = 100
+PIPE_COUNT_LEARN = 15
 
 # pipe parameters
-PIPE_RADIUS = 0.25
 PIPE_LOW = 0.3
 PIPE_HIGH = 0.7
-PIPE_LENGTH = 0.35
+PIPE_LENGTH = 0.05
+PIPE_RADIUS = 0.2
+
+PIPE_RADIUS_DEVIATION = 0.01
+PIPE_RADIUS_DECREASE = 0.002
+PIPE_RADIUS_DECREASE_LEARN = 0.015
+
 
 # pipe positioning
 INTERPIPE_DISTANCE = 0.9
@@ -29,13 +35,3 @@ B_RADIUS = 0.05
 SPEED = 0.007
 GRAVITY = 0.0007
 MAX_V_SPEED = 0.015
-
-# Q-learning parameters
-q_learning_rate = 0.1
-q_discount_factor = 0.9
-q_exploration_rate = 0.995
-q_exploration_rate_min = 0.001
-q_exploration_rate_decay = 0.995
-
-# NN config
-max_grad_norm = 5.0
