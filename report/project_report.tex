@@ -13,10 +13,53 @@
 \begin{document}
 \maketitle
 
+
 \section{Wstęp}
+\textit{"Flappy bird"} to prosta gra z długą historią irytowania wszystkich graczy. Mimo swojej prostoty, wcale nie jest prosta. A przynajmniej dla człowieka. A czy tak samo jest dla maszyny?
+\newline
+Celem projektu jest sprawdzenie skuteczności domowej roboty implementacji kilku algorytmów uczenia przez wzmocnienie (ang. RL - Reinforcement Learning), tu:
+\begin{itemize}
+	\item Q-learning,
+	\item TD(0),
+	\item przez sieć neuronową,
+	\item Algorytm genetyczny.
+\end{itemize}
+Do raportu załączone jest (chaotyczne) repozytorium z zaklepanymi algorytmami, ich wynikami oraz samą grą.
 
 
-\section{Opis}
+\section{Opis gry}
+Jesteśmy ptakiem (żółtą kulką) i chcemy dolecieć jak najdalej. Ale na naszej drodze jest pełno rur (to zielone). Na szczęście są w nich dziury, przez które możemy spróbować przelecieć. I to tyle co można powiedzieć o celu gry.
+\newline
+Całość kontroli to klikanie \textit{spacji}, które powoduje skok ptaka. Poza tym \textit{Esc} wyłącza grę, \textit{R} (niekoniecznie duże) restartuje rozgrywkę. Każdy inny przycisk działa jako pauza (lub tę pauzę cofa).
+\newline\newline
+Gra jest mniej więcej w pełni konfigurowalna. Parametry można znaleźć w pliku \textit{game\_config.py}.
+\newline
+Ptak zawsze zaczyna na wysokości połowy mapy, z prędkością poziomą równą $0$. Grawitacja jest stała, prędkość pozioma też. Skok ustawia prędkość pionową na tę samą wartość.
+\newline
+Grubość (pozioma) rury jest stała. Odległości między rurami są brane z rozkładu normalnego. Środek dziury jest brany z rozkładu jednostajnego. Promień dziury jest brany z rozkładu normalnego i z każdą kolejną rurą maleje (tempo zależy od poziomu trudności).
+\newline\newline
+Hiperparametr \textit{HARD} określa poziom trudności gry (\textit{False} to łatwy, \textit{True} to trudny). 
+\newline\newline
+Silnik gry nie ma wbudowanego zegara. Dzięki temu można trenować modele szybciej niż w czasie rzeczywistym. A w trybach do grania jest oddzielny zegar, który pilnuje odpowiedniego framerate'u.
+\newline
+Moduły do wyświetlania gry jest napisany w pygame'ie.
+
+
+\section{Granie}
+Pliki \textit{play\_*.py} to ta grywalna część projektu. Każdy odpowiada któremuś z algorytmów (sposób implementacji może sę różnić między plikami) poza plikiem \textit{play\_yourself.py}, gdzie nie ma żadnego wspomagania. Tak, sterowanie działa wszędzie i algorytmom można przeszkadzać.
+
+
+\section{Ogólnie o uczeniu}
+Podczas gry, na górze okna wyświetlają się na czerwono 3 tuple liczb. Oznaczają one kolejno:
+\begin{itemize}
+	\item obecną (uogólnioną) stratę, czyli odległość pozioma minus różnica poziomów środka ptaka i środka następnej dziury, używana do oceny modelu. Często zwana również \textbf{wynikiem}.
+	\item stan, czyli (pozycję pionową, prędność pionową, pozycję dolnego końca następnej dziury, pozycję górnego końca następnej dziury, odległość poziomą do następnej rury). Przy czym to ostatnie jest liczone od prawego końca ptaka do lewego końca rury. Dopiero gdy ptak w całości minie linię końca rury, zmieniana jest "następna rura".
+	\item (ilość miniętych rur, status), gdzi to drugie to $1$ gdy dalej żyjemy i $0$ gdy już nie.
+\end{itemize}
+
+
+\section{Uczenie nie maszynowe}
+Jako kontekst powiem, że pomimo wielu prób, nie udało mi się zdobyć wyniku powyżej 7 (samej siódemki też zresztą nie).
 
 
 \section{Q-learning}
@@ -30,6 +73,10 @@
 
 \section{Algorytm genetyczny}
 
+
+\includegraphics[width=8cm, height=6cm]{evo\_example\_100\_100}
+\includegraphics[width=8cm, height=6cm]{evo\_example\_200\_200}
+\includegraphics[width=8cm, height=6cm]{evo\_example\_400\_400}
 
 \section{Podsumowanie}
 
