@@ -3,6 +3,8 @@ import engine as eng
 from tqdm import tqdm
 from game_config import *
 from copy import deepcopy
+import matplotlib.pyplot as plt
+from evaluate import *
 
     
 
@@ -23,8 +25,7 @@ def eval_model(all_weights, all_biases, pipes):
             state = state @ all_weights[i] + all_biases[i]
         position, state, output = engine.update(np.argmax(state))
     
-    return position - np.abs(state[0] - (state[3]-state[2])/2)
-    # subtract diff between bird_height and middle of the pipe
+    return loss(position, state)
 
 
 MEAN = 0
@@ -45,6 +46,7 @@ def fit(epochs, player_count = 100):
         pool[i] = [all_weights, all_biases]
 
     results = None
+    general = np.zeros((epochs, 2))
     for i in tqdm(range(epochs)):
         pipes = eng.get_pipes_list(True, PIPE_COUNT_LEARN)
         # evaluate
@@ -52,9 +54,6 @@ def fit(epochs, player_count = 100):
             [eval_model(pool[j][0], pool[j][1], pipes) for j in range(player_count)]
         )
         
-        if i+1 == epochs:
-            break
-
         # choose the fittest
         save = int(player_count/10)         # save top 10
         change = int(3*save)            # alter top 30, 3 models for each
@@ -81,11 +80,32 @@ def fit(epochs, player_count = 100):
                 pool[save+j+2*change][1][k] += np.random.normal(MEAN, VARIANCE, (1, network_dimensions[k+1]))
 
         # print(results[sorted[:6]])
-        print(f'At {i} average = {np.average(results)}, top 10% average = {np.average(results[:save])}')
+        general[i][0] = np.average(results)
+        general[i][1] = np.average(results[:save])
 
 
-    return results
+    repeats = 10
+    results = np.zeros((player_count))
+    for _ in tqdm(range(repeats)):
+        pipes = eng.get_pipes_list(True, PIPE_COUNT_LEARN)
+        for i in range(player_count):
+            results[i] += eval_model(pool[i][0], pool[i][1], pipes)
+    results /= 10
 
 
-res = fit(500, 250)
-# print(np.sort(res))
+    best = np.argmax(results)
+    print(results[best])
+    return pool[best][0], pool[best][1], general
+
+epochs = 400
+players = 400
+
+w, b, general = fit(epochs, players)
+print(w)
+print(b)
+
+plt.plot(general[:, 0], "-r", label="average all")
+plt.plot(general[:, 1], "-g", label="average top 10%")
+plt.legend(loc="upper left")
+plt.title(f"Evolution results, {epochs} epochs, {players}, players")
+plt.savefig(f"report/evo_example_{epochs}_{players}.png")

@@ -4,6 +4,7 @@ from pygame.locals import *
 from game_config import *
 import engine as eng
 from drawable import *
+from evaluate import *
 
 
 pygame.init()
@@ -15,7 +16,7 @@ clock = pygame.time.Clock()
 # Game loop
 run = True
 while run:
-    pipes = eng.get_pipes_list()
+    pipes = eng.get_pipes_list()            # ADD "True" AS AN ARGUMENT HERE
     engine = eng.Game_engine(pipes)
     first_pipe = 0
     x_position = 0
@@ -38,7 +39,8 @@ while run:
 
         if not paused:
             x_position, data, result = engine.update(jump)
-        
+            print(loss(x_position, data))
+
 
         screen.fill(BLUE)
         draw_circle(screen, data[0])
