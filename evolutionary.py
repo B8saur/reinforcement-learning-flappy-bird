@@ -97,8 +97,8 @@ def fit(epochs, player_count = 100):
     print(results[best])
     return pool[best][0], pool[best][1], general
 
-epochs = 400
-players = 400
+epochs = 100
+players = 100
 
 w, b, general = fit(epochs, players)
 print(w)

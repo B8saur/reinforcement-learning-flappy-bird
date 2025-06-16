@@ -56,6 +56,7 @@ Podczas gry, na górze okna wyświetlają się na czerwono 3 tuple liczb. Oznacz
 	\item stan, czyli (pozycję pionową, prędność pionową, pozycję dolnego końca następnej dziury, pozycję górnego końca następnej dziury, odległość poziomą do następnej rury). Przy czym to ostatnie jest liczone od prawego końca ptaka do lewego końca rury. Dopiero gdy ptak w całości minie linię końca rury, zmieniana jest "następna rura".
 	\item (ilość miniętych rur, status), gdzi to drugie to $1$ gdy dalej żyjemy i $0$ gdy już nie.
 \end{itemize}
+Stan świata jaki widzi model to dokładnie ta środkowa tupla.
 
 
 \section{Uczenie nie maszynowe}
@@ -71,12 +72,50 @@ Jako kontekst powiem, że pomimo wielu prób, nie udało mi się zdobyć wyniku 
 \section{Sieć neuronowa}
 
 
-\section{Algorytm genetyczny}
+\section{Algorytm ewolucyjny}
+Ogólny zamysł metody jest taki, żeby na początku wygenerować losowo działające modele, a następnie wybierać najlepsze, usuwać najgosze, mutować to co zostało i ponawiać pętle.
+\newline
+W obecnej implementacji wszystko opiera się o arbitralnie wybraną sieć neuronową o wymiarach $[5, 5, 2]$, czyli z tylko jedną ukrytą warstwą. Funkcja aktywacji to ReLU, a wynik sieci jest mielony przy użyciu softmax'a. Opisany kod znajduje się w pliku \textit{evolutionary.py}.
 
+\subsection{Proces uczenia}
+Na początku parametry wszystkich modeli są inicjalizowane rozkładem normalnym $\mathcal{N}(0, 10^{-1})$.
+Następnie w pętli $\#epok$-krotnie:
+\begin{itemize}
+	\item generowany jest układ rur (mapa), na którym oceniane będą modele,
+	\item każdy model jest oceniany,
+	\item 10\% najlepszych modeli pozostaje w populacji nieulegając zmianie,
+	\item 30\% najlepszych modeli (w czym powyższe) trafia do populacji w trzech kopiach, odrobinę zmienionych. Tzn. do ich parametrów dodawane są wartości brane z $\mathcal{N}(0, 10^{-4})$,
+	\item zapisywane są wyniki (nie wpływa na działanie algorytmu).
+\end{itemize}
+Należy zauważyć, że rozmiar populacji nie ulega zmianie.
+\newline
+Na koniec każdy pozostały w populacji model jest oceniany ja 10 konfiguracjach mapy (każdy model na każdej z tych map) i wybierany jest ten działający średnio najlepiej.
 
+\subsection{Rezultaty}
+Pomimo relatywnie prostej implementacji, bez krzyżowania modeli, przekazywania genów itd., wyniki są całkiem niezłe. Zapisane są trzy wyniki, dla ($\#epok$, $rozmiar \ populacji$) kolejno: ($100$, $100$), ($200$, $200$), ($400$, $400$), o czasach trenowania rzędu: minuta, pare minut, parenaście minut.
+\newline
 \includegraphics[width=8cm, height=6cm]{evo\_example\_100\_100}
 \includegraphics[width=8cm, height=6cm]{evo\_example\_200\_200}
+\newline
 \includegraphics[width=8cm, height=6cm]{evo\_example\_400\_400}
+\newline
+Zdecydowanie warto zauważyć, że wyniki mocno zależą od mapy. Uśrednione wyniki oscylują w okolicy 6 z hakiem, choć trafiają się również wyśmienite układy rur pozwalające na wyniki około 9.
+\newline
+Na trzecim rysunku widać, że wyniki całości populacji niewiele odbiegają od wyników najlepszych 10\%, co może być spowodowane fizycznymi ograniczeniami mapy.
+
+\subsection{Dokładne rezultaty}
+Modele będące wynikami przebiegów, które wygenerowały powyższe rysunki, dostępne są w pliku \textit{models\_evolutionary.py}. Plik ten można odpalić by dokładniej ocenić osiągnięte sieci. Po takim właśnie przetestowaniu, na $10^4$ mapach, wyniki prezentują się następująco:
+\begin{itemize}
+	\item Próba mała, ($100$, $100$): $7.0758$.
+	\item Próba średnia, ($200$, $200$): $7.4886$.
+	\item Próba duża, ($400$, $400$): $7.0753$.
+\end{itemize}
+Wszystkie wyniki są całkiem dobre, zdecydowanie lepsze niż nawet rekordy co poniektórych autorów. Należy pamiętać, że każde z powyższych to średni wynik z wielu przebiegów \textbf{JEDNEGO} modelu, co niewiele jest w stanie powiedzieć o rzeczywistej przewadze tych czy innycht hiperparametrów.
+\newline\newline
+Ten środkowy model jest dołączony również w pliku \textit{play\_evo.py}, gdzie można pooglądać, jak sobie gra.
+\newline
+Jego taktyka nie wydaje się zbyt skomplikowana. Model utrzymuje ptaka na wysokości środka kolejnej dziury i zdaje się nie myśleć zbyt wiele więcej, choć nie są to bardzo uważne obserwacje.
+
 
 \section{Podsumowanie}
 
