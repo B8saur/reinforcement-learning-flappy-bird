@@ -9,7 +9,9 @@ from nn import *
 
 # Train model
 model = Model_NN()
-model.fit(20000)
+# model.fit(20000)
+# model.save_model()
+model.load_model()
 
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -29,7 +31,7 @@ while run:
     paused = False
     new_game = False
     while run and not new_game:
-        clock.tick(12)
+        clock.tick(30)
 
         jump = bool(model.action(game_state))
         # print(jump)

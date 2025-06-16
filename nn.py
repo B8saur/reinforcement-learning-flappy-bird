@@ -5,6 +5,7 @@ import random
 from collections import deque
 from copy import copy, deepcopy
 from tqdm import tqdm 
+import pickle 
 
 def leaky_relu(x):
     return np.where(x>0, x, 0.1*x)
@@ -53,6 +54,14 @@ class Model_NN:
     def update_target_model(self):
         self.target_model.weights = [w.copy() for w in self.weights]
         self.target_model.biases = [b.copy() for b in self.biases]
+
+    def save_model(self, path = "model.pickle"):
+        with open(path, 'wb') as file:
+            pickle.dump((self.weights, self.biases), file)
+
+    def load_model(self, path = "model.pickle"):
+        with open(path, 'rb') as file:
+            self.weights, self.biases = pickle.load(file)
 
     def forward_pass(self, input):
         a = np.array(input, dtype=np.float32).reshape(-1, 1)
@@ -130,7 +139,7 @@ class Model_NN:
     def fit(self, episodes):
         scores = []
         epsilon = 0.9
-        for episode in tqdm(range(episodes), colour='green'):
+        for episode in tqdm(range(1,episodes+1), colour='green'):
             score = 0
             
             epsilon = max(0.001, epsilon * 0.999)
@@ -170,4 +179,4 @@ class Model_NN:
 
             if episode % 500 == 0:
                 self.update_target_model()
-            
+                self.save_model()
