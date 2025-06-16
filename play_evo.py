@@ -58,12 +58,11 @@ while run:
                 paused = not paused
 
 
-        for i in range(len(weights)):
-            data = data @ weights[i] + biases[i]
-        if(np.argmax(data) == 1):
-            jump = True
-
         if not paused:
+            for i in range(len(weights)):
+                data = data @ weights[i] + biases[i]
+            if(np.argmax(data) == 1):
+                jump = True
             x_position, data, result = engine.update(jump)
         
 
