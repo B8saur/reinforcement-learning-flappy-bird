@@ -143,8 +143,8 @@ class Model_NN:
             score = 0
             
             epsilon = max(0.001, epsilon * 0.999)
-            game = Game_engine()
-            game_state = game.get_init_state()
+            pipes = get_pipes_list(True, PIPE_COUNT_LEARN)
+            game = Game_engine(pipes)
             game_state = game.update(0)
             state, alive = get_useful_state(game_state)
 

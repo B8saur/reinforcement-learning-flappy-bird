@@ -32,7 +32,7 @@ while run:
     paused = False
     new_game = False
     while run and not new_game:
-        clock.tick(30)
+        clock.tick(60)
 
         jump = bool(model.action(game_state))
         # print(jump)
