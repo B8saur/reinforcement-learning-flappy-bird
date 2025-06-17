@@ -71,28 +71,60 @@ Pierwszą z zastosowanych metod była metoda tzw. Q-learningu. Algorytm ten jest
 	Czyli aktualizujemy Q w oparciu o oczekiwaną nagrodę w przyszłości. \\
 	W trakcie implementacji tego rozwiązania napotkaliśmy jednak niejedną komplikację. \\
 
-	Otóż agorytm ten ma jedną, dość istotną wadę. Implementowany najczęściej jest on, ze względu na brak lepszego sposobu, poprzez fizyczne trzymanie tablicy Q indeksowanej stanami i akcjami. To narzuca jednak to, że zbiory stanów i akcji muszą być skończone. O ile akcje nie są problemem u nas, o tyle stany już sprawiają pewnego rodzaju zagwostkę. Stan gry, w postaci krotki \textit{(wysokość ptaka, prędkość pionowa ptaka, odl. pozioma do następnej rury, odl. pionowa do następnej rury)} trzeba zkwantyzować. Ostatecznie, w wyniku prób i błędów, każda wartość z owej krotki dostała odpowiednio 16, 11, 25, 14 unikalnych, dyskretnych wartości. \\
+	Otóż agorytm ten ma jedną, dość istotną wadę. Implementowany najczęściej jest on, ze względu na brak lepszego sposobu, poprzez fizyczne trzymanie tablicy Q indeksowanej stanami i akcjami. To narzuca jednak to, że zbiory stanów i akcji muszą być skończone. O ile akcje nie są problemem u nas, o tyle stany już sprawiają pewnego rodzaju zagwostkę. Stan gry, w postaci krotki zawierającej:
+	\begin{itemize} 
+	\item wysokość ptaka
+	\item prędkość pionową ptaka
+	\item	odległość poziomą do następnej rury
+	\item odległość pionowa do następnej rury
+	\begin{itemize}
+	trzeba zkwantyzować. Ostatecznie, w wyniku prób i błędów, każda wartość z owej krotki dostała odpowiednio 16, 11, 25, 14 unikalnych, dyskretnych wartości. Taka dyskretyzacja wartości z jednej strony nie traciła aż tyle informacji, a z drugiej przestrzeń stanów akceptowalnej wielkości ($16\times11\times25\times14 = 61600$)\\
 
 	Ważne w algorytmie jest również \textit{eksploracja}. Otóż, jeśli nie będziemy nigdy widzieć / eksplorować pewnych stanów gry, to po ich napotkaniu nasz algorytm nie będzie działał dobrze - za mało razy byliśmy w danym stanie i wartość Q dla niego nie jest jeszcze pewna. Dlatego też na początku treningu staramy się wykonywać naszym agentem losowe akcje. W dalszej fazie treningu proporcja losowych akcji systematycznie spada do bardzo małej - ale niezerowej - wartości.    
 
 	Istotne było również dobranie dobrej funkcji kosztu. Początkowo nagradzała jedynie za przeżywanie, oraz bardzo karciła za przegrywanie. Jednakże nauka szła opornie. Dlatego dodałem małą modyfikację do funkcji kosztu - nagradzałem dodatkowo za przebywanie na wysokości w pobliżu dziury w następnej rurze. Efekt był zadowalający - algorytm szybciej i sprawniej się uczył. \\
-	Model oparty o Q-learning wytrenowany na przestrzeni 20000 rozgrywek jest w stanie pokonać średnio \textbf{4.66} rur.
+	Model oparty o Q-learning wytrenowany na przestrzeni 20000 rozgrywek jest w stanie pokonać średnio \textbf{4.662} rur.
 
 	\subsection{SARSA}
 	Zaprezentowany sposób aktualizacji tablicy Q nie jest jedynym możliwym. Algorytm \textit{SARSA} (\textit{state–action–reward–state–action}) bazuje na poniższej metodzie aktualizacji:
 	\[	Q(S_t, A_t) = (1-\alpha)\cdot Q(S_t, A_t) + \alpha \cdot \left( R_{t+1} + \gamma Q(S_t, A_t) \right)	\]
-	Reszta algorytmu pozostaje niezmieniona względem Q-learningu. Dzięki zastosowaniu ten prostej zmiany, (oraz podobnie jak wcześniej wytrenowniu na przestrzeni 20000 rozgrywek) jesteśmy osiągnąć rezultaty na poziomie \textbf{5.39} przeskoczonych rur.\\
+	Reszta algorytmu pozostaje niezmieniona względem Q-learningu. Dzięki zastosowaniu ten prostej zmiany, (oraz podobnie jak wcześniej wytrenowniu na przestrzeni 20000 rozgrywek) jesteśmy osiągnąć rezultaty na poziomie \textbf{5.389} przeskoczonych rur.\\
 
 	Niestety, ciężko nam uzyskać idealne rezultaty - kwantyzacja stanów idealna nie jest co przekłada sie na niedokładności w reprezentacji rzeczywistego stanu oraz co za tym idzie okazjonalną niespodziewaną śmiercią.
+
+
 \section{Sieć neuronowa}
-Postalowiliśmy również spróbować zaimplementować sieć neuronową, by i ta zmierzyła się z naszą grą. 
+Postalowiliśmy również spróbować zaimplementować sieć neuronową, by i ta zmierzyła się z naszą grą. \\
+	Koniec końców zdecydowaliśmy się na tzw. \textit{DQN} (Deep Q Network). Czyli tak naprawdę będziemy znowu starali się wyznaczyć funkcję ''jakości'' Q, ale tym razem przy użyciu sieci neuronowej.
+	Sieć posiada wymiary [4,16,16,2], gdzie cztery wejścia odpowiednio:
+	\begin{itemize}
+	\item wysokość ptaka
+	\item prędkość pionowa ptaka
+	\item odległość pozioma do następnej rury
+	\item odległość pionowa do następnej rury
+	\end{itemize}
+	Warstwy ukryte były w pełni połączone oraz używały funkcji aktywacyjnych LeakyReLU. Oba z wyjść odpowiadają wartościom odpowiedno $Q(s, 0), Q(s, 1)$ - jakości ruchu ''nie-skoku'' oraz ''skoku'' będąc w stanie $s$. \\
+	Jednakże sam proces uczenia był \textbf{bardzo} niestabilny. W celu jego ustabilizowania zastosowaliśmy parę technik, często używanych w DQN:
+	\begin{itemize}
+	\item Bufor z ''powtórkami'' - trenowanie modelu w oparciu jedynie o najnowsze doświadczenia nie jest dobrym pomysłem - spora część tych zdarzeń będzie zależna od siebie wzajemnie co może niegatywnie wpłynąć na proces uczenia. Zaradzić temu można tworząc spory bufor stałego rozmiaru, gdzie będa trafiać kolejne ''doświaczenia'' (w postaci krotek $(S_t, A_t, R_{t+1}, S_{t+1})$), a stare będą po pewnym czasie usuwane. Następnie, chcąc nauczyć otrzymać próbkę danych do nauki losujemy wartości z naszego bufora.
+	\item Sieć ''referencyjna'' - do oceny oczekiwanej nagrody w przyszłości używamy tej samej funckji Q co dla wyliczania aktualnej nagrody. Może to się wiązać z dużą niestabilnością. Rozwiązaniem jest wprowadzenie drugiej sieci ''referencyjnej'', którą będziemy aktualizować rzadziej od głównej (np. co 500 rozgrywek zamiast co każdą) i to ją będziemy używać do wyznaczania \textit{przyszłych} wartości $Q(S_{t+1}, a)$.  
+	\end{itemize}
+	Oraz zastosowaliśmy kilka pomniejszych, ale wciąż istnotnych usprawnień:
+	\begin{itemize}
+	\item Również tu była potrzeba ''eksploracji'' - na początku przymuszamy nasz algorytm do wykonywania losowych akcji, by nagromadzić różnorakie doświadczenia. Potem coraz bardziej pozwalamy modelowi podejmować bardziej świadome decyzje.
+	\item Funkcja kosztu została zmieniona - oryginalnie funkcją kosztu była ilość ominiętych rur. Jest to sensowna miara jakości modelu, aczkolwiek jest ona zbyt małomówna dla naszego modelu. \\
+	Dlatego funkcję tę zmieniłem tak, że po każdej przeżytej sekundzie algorytm jest nagradzamy punktem, a w przypadku śmierci otrzymuje ogromną karę. Niestety i ta funkcja okazała się zbyt małowówna i trening przebiegał bardzo opornie. \\
+	Ostatecznie funkcją, która się sprawdziła dosyć dobrze była taka, która nagradzała za przeżycie, bardzo karciła za śmierć oraz dodatkowo nagradzała ptaka za posiadanie współrzędnej Y-owej podobnej do wsp. Y-owej następnej dziury w rurze. 
+	\item Od czasu do czasu pojawiały się duże niestabilności natury numerycznej w samej aktualizacji wag sieci. Powodem był gradient, który czasem osiągał nienaturnalnie duże wartości. W celu temu zaradzenia ograniczaliśmy wartości gradientu tak, by nigdy nie osiągały zbyt dużych wartości. 
+	\end{itemize}
+	Po rozprawieniu się ze wszystkimi wspomnianymi przeciwnościami udało nam się wytrenować dość dobrze działający model. Co prawda trening był dosyć czasochłonny (mimo małej sieci wciąż zajął na laptopie około godziny), ale trud był tego wart. Nasz ptak, posługując się modelem korzystającym z opisanej sieci neuronowej jest w stanie pokonywać średnio \textbf{6.367} rur.
 
 
 \section{Algorytm ewolucyjny}
 Ogólny zamysł metody jest taki, żeby na początku wygenerować losowo działające modele, a następnie wybierać najlepsze, usuwać najgosze, mutować to co zostało i ponawiać pętle.
 \newline
 W obecnej implementacji wszystko opiera się o arbitralnie wybraną sieć neuronową o wymiarach $[5, 5, 2]$, czyli z tylko jedną ukrytą warstwą. Funkcja aktywacji to ReLU, a wynik sieci jest mielony przy użyciu softmax'a. Opisany kod znajduje się w pliku \textit{evolutionary.py}.
-
+x
 \subsection{Proces uczenia}
 Na początku parametry wszystkich modeli są inicjalizowane rozkładem normalnym $\mathcal{N}(0, 10^{-1})$.
 Następnie w pętli $\#epok$-krotnie:
