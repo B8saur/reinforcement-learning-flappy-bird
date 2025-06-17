@@ -21,7 +21,7 @@ print("Evaluating Q_model:", evaluate(model.action_evaluate))
 model = Model_SARSA()
 model.fit(20000)
 
-print("Evaluating SARSA(0):", evaluate(model.action_evaluate))
+print("Evaluating SARSA():", evaluate(model.action_evaluate))
 
 model = Model_NN()
 # model.fit(20000)
