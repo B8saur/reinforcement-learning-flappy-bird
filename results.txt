@@ -1,0 +1,8 @@
+
+Evaluating Evo1: 7.138719052693804
+Evaluating Evo2: 7.178292276886403
+Evaluating Evo3: 6.894154235213591
+Evaluating Q_model: 5.364500614001176
+Evaluating Q_model_v2: 0.2936547818575797
+Evaluating TD(0): 5.597190751061318
+Evaluating NN: 6.455265366013855

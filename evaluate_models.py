@@ -7,6 +7,11 @@ from drawable import *
 
 from rlfb_qlearning import *
 from nn import *
+from models_evolutionary import *
+
+print("Evaluating Evo1:", evaluate(to_eval_evo1))
+print("Evaluating Evo2:", evaluate(to_eval_evo2))
+print("Evaluating Evo3:", evaluate(to_eval_evo3))
 
 model = Model_Q()
 model.fit(20000)
