@@ -133,10 +133,12 @@ class Model_NN:
     def action(self, game_state):
         state, alive = get_useful_state(game_state)
         out_val, _, _ = self.forward_pass(state)
-        # if random.random() < 0.0005:
-        #     print(out_val)
         return int(np.argmax(out_val))
-    
+
+    def action_evaluate(self, game_info):
+        dummy_game_state = (0, game_info, (0,0))
+        return self.action(dummy_game_state)
+
     def fit(self, episodes):
         scores = []
         epsilon = 0.9
