@@ -77,21 +77,22 @@ Pierwszą z zastosowanych metod była metoda tzw. Q-learningu. Algorytm ten jest
 	\item prędkość pionową ptaka
 	\item	odległość poziomą do następnej rury
 	\item odległość pionowa do następnej rury
-	\begin{itemize}
+	\end{itemize}
 	trzeba zkwantyzować. Ostatecznie, w wyniku prób i błędów, każda wartość z owej krotki dostała odpowiednio 16, 11, 25, 14 unikalnych, dyskretnych wartości. Taka dyskretyzacja wartości z jednej strony nie traciła aż tyle informacji, a z drugiej przestrzeń stanów akceptowalnej wielkości ($16\times11\times25\times14 = 61600$)\\
 
 	Ważne w algorytmie jest również \textit{eksploracja}. Otóż, jeśli nie będziemy nigdy widzieć / eksplorować pewnych stanów gry, to po ich napotkaniu nasz algorytm nie będzie działał dobrze - za mało razy byliśmy w danym stanie i wartość Q dla niego nie jest jeszcze pewna. Dlatego też na początku treningu staramy się wykonywać naszym agentem losowe akcje. W dalszej fazie treningu proporcja losowych akcji systematycznie spada do bardzo małej - ale niezerowej - wartości.    
 
 	Istotne było również dobranie dobrej funkcji kosztu. Początkowo nagradzała jedynie za przeżywanie, oraz bardzo karciła za przegrywanie. Jednakże nauka szła opornie. Dlatego dodałem małą modyfikację do funkcji kosztu - nagradzałem dodatkowo za przebywanie na wysokości w pobliżu dziury w następnej rurze. Efekt był zadowalający - algorytm szybciej i sprawniej się uczył. \\
-	Model oparty o Q-learning wytrenowany na przestrzeni 20000 rozgrywek jest w stanie pokonać średnio \textbf{4.662} rur.
+	Model oparty o Q-learning wytrenowany na przestrzeni 20000 rozgrywek jest w stanie pokonać średnio \textbf{4.662} rur.	\\
+	Uruchamiając \textit{play\_q.py} można oglądać zmagania tego modelu (po jego uprzednim wytrenowaniu, co nie trwa długo). W czasie rozgrywki można zauważyć, że model radzi sobie całkiem dobrze, jednak nie idealnie. Ciężko stwierdzić, na ile niedokładności te wynikają z niedotrenowania a na ile z błędów w reprezentacji stanów (tj. utratę informacji). 
 
 	\subsection{SARSA}
 	Zaprezentowany sposób aktualizacji tablicy Q nie jest jedynym możliwym. Algorytm \textit{SARSA} (\textit{state–action–reward–state–action}) bazuje na poniższej metodzie aktualizacji:
 	\[	Q(S_t, A_t) = (1-\alpha)\cdot Q(S_t, A_t) + \alpha \cdot \left( R_{t+1} + \gamma Q(S_t, A_t) \right)	\]
 	Reszta algorytmu pozostaje niezmieniona względem Q-learningu. Dzięki zastosowaniu ten prostej zmiany, (oraz podobnie jak wcześniej wytrenowniu na przestrzeni 20000 rozgrywek) jesteśmy osiągnąć rezultaty na poziomie \textbf{5.389} przeskoczonych rur.\\
 
-	Niestety, ciężko nam uzyskać idealne rezultaty - kwantyzacja stanów idealna nie jest co przekłada sie na niedokładności w reprezentacji rzeczywistego stanu oraz co za tym idzie okazjonalną niespodziewaną śmiercią.
-
+	Niestety, ciężko nam uzyskać idealne rezultaty - kwantyzacja stanów idealna nie jest co przekłada sie na niedokładności w reprezentacji rzeczywistego stanu oraz co za tym idzie okazjonalną niespodziewaną śmiercią.\\
+	Do podziwiania rozgrywek tego modelu załączamy \textit{play\_sarsa.py}. Zachowanie dosyć podobne do poprzedniego z modeli.
 
 \section{Sieć neuronowa}
 Postalowiliśmy również spróbować zaimplementować sieć neuronową, by i ta zmierzyła się z naszą grą. \\
@@ -117,8 +118,8 @@ Postalowiliśmy również spróbować zaimplementować sieć neuronową, by i ta
 	Ostatecznie funkcją, która się sprawdziła dosyć dobrze była taka, która nagradzała za przeżycie, bardzo karciła za śmierć oraz dodatkowo nagradzała ptaka za posiadanie współrzędnej Y-owej podobnej do wsp. Y-owej następnej dziury w rurze. 
 	\item Od czasu do czasu pojawiały się duże niestabilności natury numerycznej w samej aktualizacji wag sieci. Powodem był gradient, który czasem osiągał nienaturnalnie duże wartości. W celu temu zaradzenia ograniczaliśmy wartości gradientu tak, by nigdy nie osiągały zbyt dużych wartości. 
 	\end{itemize}
-	Po rozprawieniu się ze wszystkimi wspomnianymi przeciwnościami udało nam się wytrenować dość dobrze działający model. Co prawda trening był dosyć czasochłonny (mimo małej sieci wciąż zajął na laptopie około godziny), ale trud był tego wart. Nasz ptak, posługując się modelem korzystającym z opisanej sieci neuronowej jest w stanie pokonywać średnio \textbf{6.367} rur.
-
+	Po rozprawieniu się ze wszystkimi wspomnianymi przeciwnościami udało nam się wytrenować dość dobrze działający model. Co prawda trening był dosyć czasochłonny (mimo małej sieci wciąż zajął na laptopie około godziny), ale trud był tego wart. Nasz ptak, posługując się modelem korzystającym z opisanej sieci neuronowej jest w stanie pokonywać średnio \textbf{6.367} rur. \\
+	Aby kibicować sieci neuronowej podczas jej zmagań wystarczy uruchomić \textit{play\_nn.py}. W związku z bardzo długim treningiem owej sieci, sieć ta na ten moment jest ładowana z \textit{model.pickle}. Można również wytrenować sieć od zera odkomentowując odpowiednie linie w \textit{play\_nn.py}.
 
 \section{Algorytm ewolucyjny}
 Ogólny zamysł metody jest taki, żeby na początku wygenerować losowo działające modele, a następnie wybierać najlepsze, usuwać najgosze, mutować to co zostało i ponawiać pętle.
@@ -166,7 +167,27 @@ Jego taktyka nie wydaje się zbyt skomplikowana. Model utrzymuje ptaka na wysoko
 
 
 \section{Podsumowanie}
+Przyszła pora na ostateczne porównanie i omówienie przedstawionych metod. W celu porównania sprawności danej metody, przeprowadzamy 100 rozgrywek w czasie których ptak korzysta z odpowieniego modelu do podejmowania decyzji o skoku / nie-skoku. Po przetestowaniu w tenże sposób każdej z metod otrzymamy następujące wyniki:
+	
+	\begin{center}	
+	\begin{tabular}{||c c||}
+	\hline
+	 $metoda$ & wynik \\ [0.5ex]
+	\hline\hline
+	 Q-learning & 5.364 \\
+	 Q-learning(SARSA) & 5.597 \\
+	 NN & 6.455 \\
+	 Ewolucyjny (mała próba) & 7.138 \\
+	 Ewolucyjny (średnia próba) & \textbf{7.178} \\
+	 Ewolucyjny (duża próba) & 6.894 \\ [1ex]
+	 \hline
+	\end{tabular}
+	\end{center}
 
+	Najgorzej (choć i tak satysfakcjonująco) poradziła sobie metoda oparta na Q-learning'u. Jest ona dosyć prostą metodą, więc fakt że poradziła sobie najgorzej nie jest niespodziewany. Fakt, że musimy poświęcać część informacji poprzez dyskretyzację danych daje się we znaki. \\
+	Dochodzimy tu też do wniosku, że Q-learning w wersji SARSA sprawdza się u nas lepiej od wersji standardowej (nie jest to błąd pomiarowy, wynik okazywał się lepszy w kilku niezależnych próbach).
 
+	Model oparty na sieciach neuronowych też radzi sobie bardzo dobrze. Uważamy, że przy lepszym doborze parametrów, dłuższym treningu tudzież zastosowaniu gotowych rozwiązań miałby on szanse przebić algorytm ewolucyjny pod względem uzyskanego wyniku. \\
 
+	Ku naszemu zaskoczeniu najlepiej poradził sobie model stosujący algorytm genetyczny. Pobił on swoją wydajnością nawet mocno dopracowany model używający sieci neuronowej. Podejrzewamy, że może to wynikać z faktu, iż nasz problem jest na tyle prosty, że ''wylosowanie'' dobrej strategii jest bardziej prawdopodobne od uzyskania jej na drodze treningu sieci, który to często nie jest stabilny. \\
 \end{document}

@@ -109,7 +109,7 @@ class Model_Q:
         dummy_game_state = (0, game_info, (0,0))
         return self.action(dummy_game_state)
 
-class Model_TD:
+class Model_SARSA:
     def __init__(self):
         self.Q = defaultdict(lambda: [0, 0])
 

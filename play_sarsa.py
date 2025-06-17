@@ -10,7 +10,7 @@ from rlfb_qlearning import *
 from evaluate import *
 
 # Train model
-model = Model_TD()
+model = Model_SARSA()
 model.fit(20000)
 
 pygame.init()

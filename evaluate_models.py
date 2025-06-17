@@ -23,7 +23,7 @@ model.fit(20000)
 
 print("Evaluating Q_model_v2:", evaluate(model.action_evaluate))
 
-model = Model_TD()
+model = Model_SARSA()
 model.fit(20000)
 
 print("Evaluating TD(0):", evaluate(model.action_evaluate))

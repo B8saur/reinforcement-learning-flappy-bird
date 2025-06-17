@@ -11,8 +11,8 @@ from nn import *
 
 # Train model
 model = Model_NN()
-# model.fit(20000)
-# model.save_model()
+# model.fit(20000) #### UNCOMMENT TO TRAIN FROM SCRATCH
+# model.save_model() #### UNCOMMENT TO TRAIN FROM SCRATCH
 model.load_model()
 
 pygame.init()
