@@ -18,20 +18,16 @@ model.fit(20000)
 
 print("Evaluating Q_model:", evaluate(model.action_evaluate))
 
-model = Model_Q_v2()
-model.fit(20000)
-
-print("Evaluating Q_model_v2:", evaluate(model.action_evaluate))
-
 model = Model_SARSA()
 model.fit(20000)
 
-print("Evaluating TD(0):", evaluate(model.action_evaluate))
+print("Evaluating SARSA(0):", evaluate(model.action_evaluate))
 
 model = Model_NN()
 # model.fit(20000)
 # model.save_model()
 model.load_model()
+
 
 print("Evaluating NN:", evaluate(model.action_evaluate))
 
