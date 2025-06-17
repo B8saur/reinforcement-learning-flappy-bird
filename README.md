@@ -17,7 +17,7 @@ All settings can be changed in config files
 
 ===============================================
 
-Running "python3 play_nn.py" lets play NN based model for a while.
+Running "python3 play_XXX.py" lets play XXX based model for a while.
 
 ===============================================
 
